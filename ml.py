@@ -18,16 +18,16 @@ def loadModel():
 #Return Array for input of LSTM
 def clean(fileName):
     params=[]
-    y=[]
+    # y=[]
     data = pd.read_csv(os.curdir + "/" + fileName , sep='|')
     data.drop(['EtCO2','Fibrinogen', 'Unit1', 'Unit2', 'BaseExcess', 'DBP', 'Hct', 'Hgb', 'PTT', 'WBC', 'pH','HCO3','FiO2', 'PaCO2', 'Platelets', 'Magnesium',  'Phosphate',  'Potassium', 'Bilirubin_total',  'TroponinI','SaO2', 'AST','BUN', 'Alkalinephos', 'Bilirubin_direct','Glucose','Lactate', 'Calcium',  'Chloride', 'Creatinine' ],axis = 1,inplace = True)
 
     data.dropna(thresh=data.shape[1]*0.40,how='all',inplace = True)
-    La_1 = data['SepsisLabel'].sum()
-    if La_1:
-        y.append(1)
-    else:
-        y.append(0)
+    # La_1 = data['SepsisLabel'].sum()
+    # if La_1:
+    #     y.append(1)
+    # else:
+    #     y.append(0)
     data.drop(['SepsisLabel'],axis = 1,inplace = True)
     data = data.apply(lambda x: x.fillna(x.median()),axis=0)
     data = data.fillna(0)
