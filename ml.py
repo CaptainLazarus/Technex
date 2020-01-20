@@ -6,13 +6,27 @@ import numpy as np
 import keras.models 
 from keras.layers import Dense
 from keras.layers import LSTM
+from keras.models import model_from_json
+
+
+
+
+from PyQt5 import QtWidgets, uic
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+import sys
+
+
+
 
 #Loads Model
 def loadModel():
-    with open('./ml/model.json','r') as f:
+    with open('model.json','r') as f:
         model_json = json.load(f)
     model = model_from_json(json.dumps(model_json))
-    model.load_weights('./ml/model.h5')
+    model.load_weights('model.h5')
+    return model
 
 
 #Return Array for input of LSTM
@@ -39,3 +53,48 @@ def clean(fileName):
     data = data.values
     params.append(data)
     return params
+
+
+class Ui(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(Ui, self).__init__()
+        uic.loadUi('untitled.ui', self)
+     
+        self.show()
+        self.pushButton.clicked.connect(self.pushButton_handler)
+
+    def pushButton_handler(self):
+        print("hhdvcjhsvjvjsj")
+        self.open_dialog_box()
+
+    def open_dialog_box(self):
+        filename = QFileDialog.getOpenFileName()
+        path= filename[0]
+        print(path)
+        
+        #Machine Learning
+        Model = loadModel()
+
+        X_test = clean(path.split('/')[-1])
+        print(X_test)
+
+        X_test = np.reshape(X_test,(1,40,10))
+
+        y_pred = Model.predict(X_test)
+        print(y_pred)
+        
+        if (y_pred <= 0.2):
+            print("no Sepsis")
+        else:
+            print("Sepsis Go to Hospital")
+
+
+app = QtWidgets.QApplication(sys.argv)
+window = Ui()
+app.exec_()
+
+
+
+
+
+    
