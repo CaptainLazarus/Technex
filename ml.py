@@ -3,7 +3,8 @@ import os
 import math
 import pandas as pd
 import numpy as np
-import keras.models 
+from keras.models import model_from_json
+from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
 
