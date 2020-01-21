@@ -84,7 +84,7 @@ l1 = Label(root, text = "Sepsis")
 l1.place(x=200,y=210)
 e1 = Entry(root)
 e1.place(x=200,y=240)
-r1 = Button(root, text ='Download Report',command=create_window) 
+r1 = Button(root, text ='Download Report') 
 r1.place(x=200,y=400)
                 
                 
