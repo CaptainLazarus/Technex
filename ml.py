@@ -11,12 +11,14 @@ from keras.models import model_from_json
 
 
 
-from PyQt5 import QtWidgets, uic
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-import sys
 
+from tkinter import *
+from tkinter.ttk import Combobox
+
+from tkinter.filedialog import askopenfile 
+
+root = Tk() 
+root.geometry('1000x1000') 
 
 
 
@@ -33,7 +35,7 @@ def loadModel():
 def clean(fileName):
     params=[]
     # y=[]
-    data = pd.read_csv(os.curdir + "/" + fileName , sep='|')
+    data = pd.read_csv(fileName , sep='|')
     data.drop(['EtCO2','Fibrinogen', 'Unit1', 'Unit2', 'BaseExcess', 'DBP', 'Hct', 'Hgb', 'PTT', 'WBC', 'pH','HCO3','FiO2', 'PaCO2', 'Platelets', 'Magnesium',  'Phosphate',  'Potassium', 'Bilirubin_total',  'TroponinI','SaO2', 'AST','BUN', 'Alkalinephos', 'Bilirubin_direct','Glucose','Lactate', 'Calcium',  'Chloride', 'Creatinine' ],axis = 1,inplace = True)
 
     data.dropna(thresh=data.shape[1]*0.40,how='all',inplace = True)
@@ -55,43 +57,41 @@ def clean(fileName):
     return params
 
 
-class Ui(QtWidgets.QMainWindow):
-    def __init__(self):
-        super(Ui, self).__init__()
-        uic.loadUi('untitled.ui', self)
-     
-        self.show()
-        self.pushButton.clicked.connect(self.pushButton_handler)
-
-    def pushButton_handler(self):
-        print("hhdvcjhsvjvjsj")
-        self.open_dialog_box()
-
-    def open_dialog_box(self):
-        filename = QFileDialog.getOpenFileName()
-        path= filename[0]
-        print(path)
-        
-        #Machine Learning
+def open_file(): 
+    file = askopenfile(mode ='r', filetypes =[('PSV Files', '*.psv')]) 
+    if file is not None:
         Model = loadModel()
-
-        X_test = clean(path.split('/')[-1])
+        print("Model Loaded")
+        X_test = clean(file)
+        print("OK")
         print(X_test)
 
         X_test = np.reshape(X_test,(1,40,10))
 
         y_pred = Model.predict(X_test)
-        print(y_pred)
+        #print(y_pred)
         
         if (y_pred <= 0.2):
             print("no Sepsis")
         else:
             print("Sepsis Go to Hospital")
 
+v0=IntVar()
+v0.set(1)
+r1 = Button(root, text ='Upload File ', command = lambda:open_file()) 
+r1.place(x=200,y=50)
+l1 = Label(root, text = "Sepsis")
+l1.place(x=200,y=210)
+e1 = Entry(root)
+e1.place(x=200,y=240)
+r1 = Button(root, text ='Download Report',command=create_window) 
+r1.place(x=200,y=400)
+                
+                
+root.title('Sepsis Identification')
+root.geometry("600x500+10+10")
+root.mainloop()
 
-app = QtWidgets.QApplication(sys.argv)
-window = Ui()
-app.exec_()
 
 
 
